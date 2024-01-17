@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <div id="buttonContainer">    </div>
+
+
+
+</body>
+
+<script>
+
+    var chosen_category_id = null;
+    
+    function extractFields(data, field1, field2) {
+        return data.map(item => ({ [field1]: item[field1], [field2]: item[field2] }));
+    }
+
+    function buttonClick(buttonId, chosen_category_id) {
+        chosen_category_id = buttonId;
+        console.log("Button clicked! ID:", chosen_category_id);
+    }
+    function generateButtons(result) {
+        var buttonNames = result;
+        var container = document.getElementById("buttonContainer");
+
+  // Create buttons dynamically
+        buttonNames.forEach(function(name, index) {
+            var button = document.createElement("button");
+            button.textContent = result[index].name;
+            button.id = result[index].id;
+            button.onclick = function() {
+                buttonClick(button.id, chosen_category_id);
+            };
+            container.appendChild(button);
+            });
+        }
+
+    var result;
+
+    fetch('https://api.rainforestapi.com/categories?api_key=DF41575EBA74406A978730A6986E27FF&domain=amazon.com&type=standard')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+        return response.json(); // assuming the response is in JSON format
+    })
+    .then(data => {
+        var categoryList = document.getElementById("cateogryList");
+        result = extractFields(data['categories'], "name", "id");
+
+        generateButtons(result);
+
+  })
+  .catch(error => {
+    // Handle errors
+    console.error('Fetch error:', error);
+  });
+
+
+
+</script>
+
+
+
+
+</html>
