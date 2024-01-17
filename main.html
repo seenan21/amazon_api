@@ -6,7 +6,14 @@
     <title></title>
     <link rel="stylesheet" href="main.css">
 </head>
-<body>
+<body class="body">
+    <div class="countries">
+        <h1 id="main_text"><span>Choose the country you wish to view: </span></h1>
+        <div id="flex-container">
+            <!-- Add more flex items as needed -->
+        </div>
+    </div>
+
     <div id="buttonContainer">    </div>
 
 
@@ -14,10 +21,54 @@
 </body>
 
 <script>
+    var country_picked = false;
+    const countries = ["amazon.ca", "amazon.fr", "amazon.in", "amazon.it", "amazon.co.jp", "amazon.com.mx", "amazon.com", "amazon.co.uk"]
+    const country_images =["./Flags/canadasvg.svg", "./Flags/francesvg.svg", "./Flags/indiasvg.svg", "./Flags/italysvg.svg", "./Flags/japansvg.svg", "./Flags/mexicosvg.svg", "./Flags/usasvg.svg", "./Flags/uksvg.svg"]
+    var chosen_country = null;
+    function chooseCountry(buttonId) {
+        chosen_country = buttonId;
+        alert("You have chosen " + chosen_country);
+        
+    }
+    function generateCountryButtons(countries, country_images) {
+      
+        var container = document.getElementById("flex-container");
+        countries.forEach(function(name, index) {
+            var flex_items = document.createElement("div");
+            flex_items.className = "flex-item";
+            var button = document.createElement("button");
+            var image = document.createElement("img");
+            image.src = country_images[index];
+            button.className = "button-14";
+            button.textContent = countries[index];
+            button.id = countries[index];
+            button.onclick = function() {
+                chooseCountry(button.id);
+                container.style.display = "none";
+                var header = document.getElementById("main_text");
+                header.textContent = "Choose the category you wish to view: ";
+                generateCategories();
+        
+
+            };
+            flex_items.appendChild(image);
+            flex_items.appendChild(button);
+            container.appendChild(flex_items);
+        });
+    }
+
+    window.onload = function() {
+        generateCountryButtons(countries, country_images);
+        
+
+    };
+</script>
+
+<script>
+   
 
     var chosen_category_id = null;
-    
-    function extractFields(data, field1, field2) {
+       function extractFields(data, field1, field2) {
         return data.map(item => ({ [field1]: item[field1], [field2]: item[field2] }));
     }
 
@@ -25,42 +76,49 @@
         chosen_category_id = buttonId;
         console.log("Button clicked! ID:", chosen_category_id);
     }
-    function generateButtons(result) {
+    function generateCategoryButtons(result) {
         var buttonNames = result;
-        var container = document.getElementById("buttonContainer");
+        var container = document.getElementsByClassName("countries")[0];
 
   // Create buttons dynamically
         buttonNames.forEach(function(name, index) {
             var button = document.createElement("button");
             button.textContent = result[index].name;
             button.id = result[index].id;
+            button.className = "button-14";
             button.onclick = function() {
                 buttonClick(button.id, chosen_category_id);
             };
             container.appendChild(button);
             });
-        }
+    }
 
-    var result;
+    
 
-    fetch('https://api.rainforestapi.com/categories?api_key=DF41575EBA74406A978730A6986E27FF&domain=amazon.com&type=standard')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-        return response.json(); // assuming the response is in JSON format
-    })
-    .then(data => {
-        var categoryList = document.getElementById("cateogryList");
-        result = extractFields(data['categories'], "name", "id");
+    function generateCategories(){
+                alert('https://api.rainforestapi.com/categories?api_key=DF41575EBA74406A978730A6986E27FF&domain=' + chosen_country +'&type=bestsellers');
+                fetch('https://api.rainforestapi.com/categories?api_key=DF41575EBA74406A978730A6986E27FF&domain=' + chosen_country +'&type=bestsellers')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                return response.json(); 
+            })
+            .then(data => {
+                var categoryList = document.getElementById("cateogryList");
+                var result = extractFields(data['categories'], "name", "id");
 
-        generateButtons(result);
+                generateCategoryButtons(result);
 
-  })
-  .catch(error => {
-    // Handle errors
-    console.error('Fetch error:', error);
-  });
+        })
+        .catch(error => {
+            // Handle errors
+            console.error('Fetch error:', error);
+        });
+
+    }
+
+    
 
 
 
