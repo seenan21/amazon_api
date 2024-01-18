@@ -7,14 +7,13 @@
     <link rel="stylesheet" href="main.css">
 </head>
 <body class="body">
+    <h1>Amazon best sellers</h1>
     <div class="countries">
         <h1 id="main_text"><span>Choose the country you wish to view: </span></h1>
         <div id="flex-container">
             <!-- Add more flex items as needed -->
         </div>
     </div>
-
-    <div id="buttonContainer">    </div>
 
 
 
@@ -72,31 +71,41 @@
         return data.map(item => ({ [field1]: item[field1], [field2]: item[field2] }));
     }
 
-    function buttonClick(buttonId, chosen_category_id) {
+    function buttonClick(buttonId) {
         chosen_category_id = buttonId;
         console.log("Button clicked! ID:", chosen_category_id);
+
     }
     function generateCategoryButtons(result) {
         var buttonNames = result;
-        var container = document.getElementsByClassName("countries")[0];
+        var big_container = document.getElementsByClassName("countries");
+        var container = document.createElement("div");
+        container.className = "flex-container2";
+        big_container[0].appendChild(container);
 
-  // Create buttons dynamically
+  // Create buttons dynamically create flexbox for this
         buttonNames.forEach(function(name, index) {
             var button = document.createElement("button");
             button.textContent = result[index].name;
             button.id = result[index].id;
             button.className = "button-14";
             button.onclick = function() {
-                buttonClick(button.id, chosen_category_id);
+                buttonClick(button.id);
+                container.style.display = "none";
+                var header = document.getElementById("main_text");
+                header.textContent = "Choose the product you wish to view: ";
+                alert("It takes a while to load the products, please be patient");
+                generateProducts();
             };
+
             container.appendChild(button);
+
             });
     }
 
     
 
     function generateCategories(){
-                alert('https://api.rainforestapi.com/categories?api_key=DF41575EBA74406A978730A6986E27FF&domain=' + chosen_country +'&type=bestsellers');
                 fetch('https://api.rainforestapi.com/categories?api_key=DF41575EBA74406A978730A6986E27FF&domain=' + chosen_country +'&type=bestsellers')
                 .then(response => {
                     if (!response.ok) {
@@ -124,6 +133,65 @@
 
 </script>
 
+<script>
+    function generateProductButtons(result){
+
+    }
+
+    function generateProducts(){
+        console.log("starting fetch");
+
+        fetch('https://api.rainforestapi.com/request?api_key=DF41575EBA74406A978730A6986E27FF&type=bestsellers&amazon_domain='+ chosen_country +'&category_id=' + chosen_category_id)
+        .then(response => {
+                    if (!response.ok) {
+                        console.log("fetch completed");
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                return response.json(); 
+            })
+            .then(data => {
+                var productList = document.createElement("div");
+                productList.className = "flex-container2";
+                var big_container = document.getElementsByClassName("countries");
+                big_container[0].appendChild(productList);
+
+                
+
+
+                const top10Bestsellers = data.bestsellers.slice(0, 10).map(bestseller => ({
+                        title: bestseller.title,
+                        link: bestseller.link,
+                        image: bestseller.image
+                }));
+
+                top10Bestsellers.forEach(function(name, index) {
+                    var flex_items = document.createElement("div");
+                    flex_items.className = "flex-item";
+                    var textContent = document.createElement("p");
+                    var image = document.createElement("img");
+                    var link = document.createElement("a");
+                    link.href = top10Bestsellers[index].link;
+                    image.src = top10Bestsellers[index].image;
+                    image.width = 200;
+                    textContent = top10Bestsellers[index].title;
+                
+                    link.appendChild(image);
+                    flex_items.appendChild(link);
+                    productList.appendChild(flex_items);
+                    flex_items.textContent = textContent;
+                });
+                //generateProductButtons(result);
+                
+
+        })
+        .catch(error => {
+            // Handle errors
+            console.error('Fetch error:', error);
+        });
+
+    }
+
+</script>
 
 
 

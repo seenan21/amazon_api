@@ -33,6 +33,19 @@
       flex-direction: column; /* Stack items vertically */
       align-items: center; /* Center items horizontally */
     }
+    #flex-container2 {
+      display: flex;
+      flex-direction: row; 
+      align-items: center; /* Center items horizontally */
+    }
+
+    .flex-item2 {
+      margin: 10px;
+      text-align: center; /* Center text in case of longer button text */
+      display: flex;
+      flex-direction: column; /* Stack items vertically */
+      align-items: center; /* Center items horizontally */
+    }
 
     .flex-item img {
       width: 100%; /* Ensure the image doesn't exceed the width of its container */
@@ -111,4 +124,8 @@
   border-color: #e77600;
   box-shadow: rgba(228, 121, 17, .5) 0 0 3px 2px;
   outline: 0;
+}
+
+h1 {
+    text-align: center;
 }
