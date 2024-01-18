@@ -155,8 +155,6 @@
                 var big_container = document.getElementsByClassName("countries");
                 big_container[0].appendChild(productList);
 
-                
-
 
                 const top10Bestsellers = data.bestsellers.slice(0, 10).map(bestseller => ({
                         title: bestseller.title,
@@ -166,19 +164,21 @@
 
                 top10Bestsellers.forEach(function(name, index) {
                     var flex_items = document.createElement("div");
-                    flex_items.className = "flex-item";
-                    var textContent = document.createElement("p");
+                    flex_items.className = "flex-item2";
+                  ;
                     var image = document.createElement("img");
                     var link = document.createElement("a");
                     link.href = top10Bestsellers[index].link;
                     image.src = top10Bestsellers[index].image;
-                    image.width = 200;
-                    textContent = top10Bestsellers[index].title;
-                
-                    link.appendChild(image);
+                    image.width = 100;
+                    image.height = 100;
+                    var textContent = top10Bestsellers[index].title;
+                    
+                    flex_items.textContent = textContent;
+                    flex_items.appendChild(image);
                     flex_items.appendChild(link);
                     productList.appendChild(flex_items);
-                    flex_items.textContent = textContent;
+                    
                 });
                 //generateProductButtons(result);
                 
